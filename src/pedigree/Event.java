@@ -1,6 +1,7 @@
 package pedigree;
 
 import pedigree.Sim;
+import java.lang.Comparable;
 
 public class Event implements Comparable<Event> {
 
