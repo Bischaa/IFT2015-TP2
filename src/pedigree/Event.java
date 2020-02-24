@@ -6,7 +6,7 @@ import java.lang.Comparable;
 public class Event implements Comparable<Event> {
 
     // Attributs
-    protected double time; // Temps de l'évènement
+    protected double time; // Temps de l'évènements
     protected Sim subject; // Sujet de l'évènement
     protected String type; // Type de l'évènement
 

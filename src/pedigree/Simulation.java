@@ -7,7 +7,7 @@ import java.io.FileWriter;
 public class Simulation {
 
     private double fidelite = 0.9; // Paramètre de fidélité
-    private TasBinaire population = new TasBinaire(); // Tas de la population vivante
+    protected TasBinaire population = new TasBinaire(); // Tas de la population vivante
     private PriorityQueue<Event> eventQ = new PriorityQueue<Event>(); // File de priorité des
                                                                       // évènements
     private int time;
@@ -162,7 +162,7 @@ public class Simulation {
         }
 
         try {
-            FileWriter csvWriter = new FileWriter("simulationTest.csv", true);
+            FileWriter csvWriter = new FileWriter("simulationTest2.csv", true);
 
             csvWriter.append("" + time);
             csvWriter.append(",");
