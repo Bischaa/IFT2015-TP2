@@ -1,13 +1,13 @@
 package pedigree;
 
-import pedigree.Sim.Sex; //On importe la classe Sim
 import java.util.PriorityQueue; //Importe la classe de file de priorité pour les évènements
 import java.util.Random;
 
 public class Simulation {
 
     // Méthode qui exécute la simulation
-    void simulate(int n, double Tmax) {
+    public void simulate(int n, double Tmax) {
+        TasBinaire population = new TasBinaire();
         PriorityQueue<Event> eventQ = new PriorityQueue<Event>(); // File de priorité des évènements
 
         for (int i = 0; i < n; i++) {
@@ -27,13 +27,40 @@ public class Simulation {
                 switch (E.type) {
                     case "naissance": // Naissance
 
+                        // Durée de vie du nouveau Sim
+                        Random RND = new Random();
+                        AgeModel vieSim = new AgeModel(); // Pour déterminer la durée de vie du nouveau Sim
+                        double dureeVie = vieSim.randomAge(RND);
+                        double deathtime = E.time + dureeVie;
+                        eventQ.add(new Event(E.subject, deathtime, "mort")); // Ajout de la mort du Sim
+
+                        // Attente de reproduction
+                        if (E.subject.getSex() == Sim.Sex.F) {
+                            double parentHood = vieSim.expectedParenthoodSpan(Sim.MIN_MATING_AGE_F,
+                                    Sim.MAX_MATING_AGE_F);
+                            double waitingTime = AgeModel.randomWaitingTime(RND, 2.0 / parentHood); // Temps avant
+                                                                                                    // reproduction
+                            eventQ.add(new Event(E.subject, E.time + waitingTime, "reproduction")); // Nouvel évènement
+                        }
+
+                        // Enregistrement du nouveau Sim dans la population
+                        population.insert(E.subject);
                         break;
 
                     case "reproduction": // Reproduction
 
                         break;
 
-                    default: // Sélection (pour le père)
+                    case "selection": // Sélection (pour le père)
+
+                        break;
+
+                    default: // Mort du sim
+                        /*
+                         * On doit seulement faire deleteMin, car la population est triée par temps de
+                         * mort. Donc le min est celui qui décède
+                         */
+                        population.deleteMin();
                         break;
                 }
             }
@@ -43,7 +70,7 @@ public class Simulation {
     }
 
     // Méthode pour obtenir le sex d'un Sim au hasarc
-    Sim.Sex randomSex() {
+    public Sim.Sex randomSex() {
         Random rnd = new Random();
 
         // 50% de chance d'avoir un homme
@@ -54,11 +81,5 @@ public class Simulation {
         }
 
     }
-
-    // Méthode de traitement de naissance
-
-    // Méthode de traitement de reproducton
-
-    // Méthode de traitement de sélection
 
 }
