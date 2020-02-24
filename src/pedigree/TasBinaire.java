@@ -47,8 +47,8 @@ public class TasBinaire implements Comparator<Sim> {
 
 	// M�thode insert
 	public void insert(Sim o) {
-		heapMin.add(0, o);
-		sink();
+		heapMin.add(o);
+		swim(heapMin.size() - 1);
 	}
 
 	// M�thode peek
@@ -88,6 +88,7 @@ public class TasBinaire implements Comparator<Sim> {
 	// M�thode pour sink dans le tas � partir de la t�te, bas� sur le mod�le vu lors
 	// de la D�mo 3
 	public void sink() {
+
 		int childIndex;
 		int i = 0; // T�te du tas
 		while (i < heapMin.size()) {
