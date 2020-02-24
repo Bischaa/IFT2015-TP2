@@ -12,7 +12,7 @@ public class Coalescence {
 	
 	public void init() {
 		//On part la simulation pendant un certain temps
-		simulC.simulate(50, 200);
+		simulC.simulate(50, 200); //Arbitraire
 		
 		//On copie la population finale pour chaque sexe de notre simulation
 		ArrayList<Sim> populationH = new ArrayList<Sim>();
