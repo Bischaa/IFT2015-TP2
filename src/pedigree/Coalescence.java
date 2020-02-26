@@ -1,6 +1,8 @@
+//Code fait par Pierre-Olivier Tremblay: 20049076  et Maxime Ton: 20143044
+
 package pedigree;
 
-import java.io.FileWriter;
+// import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
@@ -9,68 +11,80 @@ public class Coalescence {
 
 	private Simulation simulC = new Simulation();
 	private PriorityQueue<Sim> PA_m = new PriorityQueue<Sim>();
-	protected HashMap<Double,Integer> PA_set_m = new HashMap<Double,Integer>();
+	protected HashMap<Double, Integer> PA_set_m = new HashMap<Double, Integer>();
 	private PriorityQueue<Sim> PA_f = new PriorityQueue<Sim>();
-	protected HashMap<Double,Integer> PA_set_f = new HashMap<Double,Integer>();
-	
+	protected HashMap<Double, Integer> PA_set_f = new HashMap<Double, Integer>();
+	protected HashMap<Double, Integer> taillePop = new HashMap<Double, Integer>();
+
 	public void init() {
-		//On part la simulation pendant un certain temps
-		simulC.simulate(30, 250); //Arbitraire
-		
-		//On copie la population finale pour chaque sexe de notre simulation
+		// On part la simulation pendant un certain temps
+		simulC.simulate(100, 1000); // Arbitraire
+		int taille;
+
+		// On copie la population finale pour chaque sexe de notre simulation
 		ArrayList<Sim> populationH = new ArrayList<Sim>();
 		ArrayList<Sim> populationF = new ArrayList<Sim>();
-		
-        for (Sim perso : simulC.population.heapMin) {
-            if (perso.getSex() == pedigree.Sim.Sex.F) {
-               populationF.add(perso);
-            } else {
-                populationH.add(perso);
-            }
-        }
-        
-        //Tant qu'il reste plus d'un père
-        while(populationH.size() > 1) {
-        	//Si le père n'est pas encore dans l'ensemble PA, ajouter
-        	if(!PA_m.contains(getYoungest(populationH).getFather())) {
-        		PA_m.add(getYoungest(populationH));
-        	//Si le père se retrouve déjà dans l'ensemble PA, créer un nouveau point de coalescence
-        	} else {
-        		PA_set_m.put(getYoungest(populationH).getBirthTime(), PA_m.size());
-        	}
-        	//À chaque itération, retirer l'individu le plus jeune
-        	populationH.remove(populationH.indexOf(getYoungest(populationH)));
-        }
-        
-      //Tant qu'il reste plus d'une mère
-        while(populationF.size() > 1) {
-        	//Si le père n'est pas encore dans l'ensemble PA, ajouter
-        	if(!PA_f.contains(getYoungest(populationF).getMother())) {
-        		PA_f.add(getYoungest(populationF));
-        	//Si le père se retrouve déjà dans l'ensemble PA, créer un nouveau point de coalescence
-        	} else {
-        		PA_set_f.put(getYoungest(populationF).getBirthTime(), PA_f.size());
-        	}
-        	//À chaque itération, retirer l'individu le plus jeune
-        	populationF.remove(populationF.indexOf(getYoungest(populationF)));
-        }
+		taille = simulC.population.heapMin.size(); // Population initiale
+		taillePop.put((double) 15000, taille);
+
+		for (Sim perso : simulC.population.heapMin) {
+			if (perso.getSex() == pedigree.Sim.Sex.F) {
+				populationF.add(perso);
+			} else {
+				populationH.add(perso);
+			}
+		}
+
+		// Tant qu'il reste plus d'un pï¿½re
+		while (populationH.size() > 1) {
+			// Si le pï¿½re n'est pas encore dans l'ensemble PA, ajouter
+			Sim youngest = getYoungest(populationH);
+			if (!PA_m.contains(youngest.getFather())) {
+				PA_m.add(youngest);
+				// Si le pï¿½re se retrouve dï¿½jï¿½ dans l'ensemble PA, crï¿½er un nouveau point de
+				// coalescence
+			} else {
+				PA_set_m.put(youngest.getBirthTime(), PA_m.size());
+			}
+			// ï¿½ chaque itï¿½ration, retirer l'individu le plus jeune
+			populationH.remove(populationH.indexOf(youngest));
+			taille--; // Retire une personne de la population
+			taillePop.put(youngest.getBirthTime(), taille);
+		}
+
+		// Tant qu'il reste plus d'une mï¿½re
+		while (populationF.size() > 1) {
+			// Si le pï¿½re n'est pas encore dans l'ensemble PA, ajouter
+			Sim youngest = getYoungest(populationF);
+			if (!PA_f.contains(youngest.getMother())) {
+				PA_f.add(youngest);
+				// Si le pï¿½re se retrouve dï¿½jï¿½ dans l'ensemble PA, crï¿½er un nouveau point de
+				// coalescence
+			} else {
+				PA_set_f.put(youngest.getBirthTime(), PA_f.size());
+			}
+			// ï¿½ chaque itï¿½ration, retirer l'individu le plus jeune
+			populationF.remove(populationF.indexOf(youngest));
+			taille--; // Retire une personne de la population
+			taillePop.put(youngest.getBirthTime(), taille);
+		}
 	}
-	
-	//Méthode qui retourne l'index du plus jeune membre d'une population
+
+	// Mï¿½thode qui retourne l'index du plus jeune membre d'une population
 	public Sim getYoungest(ArrayList<Sim> population) {
 		Sim youngestM = population.get(0);
 
-		for(int i = 0; i < population.size(); i++) {
-			if(population.get(i).getBirthTime() < youngestM.getBirthTime()) {
+		for (int i = 0; i < population.size(); i++) {
+			if (population.get(i).getBirthTime() < youngestM.getBirthTime()) {
 				youngestM = population.get(i);
 			}
 		}
 		return youngestM;
 	}
-	
+
 	public static void main(String[] args) {
 		Coalescence test = new Coalescence();
 		test.init();
 	}
-	
+
 }

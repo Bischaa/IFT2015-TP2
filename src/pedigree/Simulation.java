@@ -1,8 +1,10 @@
+//Code fait par Pierre-Olivier Tremblay: 20049076  et Maxime Ton: 20143044
+
 package pedigree;
 
 import java.util.PriorityQueue; //Importe la classe de file de priorité pour les évènements
 import java.util.Random;
-import java.io.FileWriter;
+// import java.io.FileWriter;
 
 public class Simulation {
 
@@ -10,7 +12,6 @@ public class Simulation {
     protected TasBinaire population = new TasBinaire(); // Tas de la population vivante
     private PriorityQueue<Event> eventQ = new PriorityQueue<Event>(); // File de priorité des
                                                                       // évènements
-    private int time;
 
     // Méthode qui exécute la simulation
     public void simulate(int n, double Tmax) {
@@ -22,13 +23,9 @@ public class Simulation {
         }
 
         while (!this.eventQ.isEmpty()) {
-            int time = 0;
             Event E = this.eventQ.poll(); // Équivalent de deleteMin
             if (E.time > Tmax) {
                 break; // Arrêt à Tmax
-            }
-            if (time % 10 == 0) { // Échantillonnage
-                populationSample((int) E.time);
             }
             if (E.subject.getDeathTime() > E.time) { // L'évènement peut avoir lieu
                 // Traiter les évènements
@@ -89,7 +86,6 @@ public class Simulation {
                         break;
                 }
             }
-            time++;
             // Sinon on ne fait rien, car le Sim est mort
         }
     }
@@ -144,50 +140,37 @@ public class Simulation {
         return y;
     }
 
-    // Méthode pour échantilloner la population
-    public void populationSample(int time) {
-
-        int pop_tot = 0;
-        int pop_homme = 0;
-        int pop_femme = 0;
-
-        // Calculer la population homme, femme totale
-        for (Sim perso : this.population.heapMin) {
-            pop_tot++;
-            if (perso.getSex() == pedigree.Sim.Sex.F) {
-                pop_femme++;
-            } else {
-                pop_homme++;
-            }
-        }
-
-        try {
-            FileWriter csvWriter = new FileWriter("simulationTest2.csv", true);
-
-            csvWriter.append("" + time);
-            csvWriter.append(",");
-            csvWriter.append("" + pop_homme);
-            csvWriter.append(",");
-            csvWriter.append("" + pop_femme);
-            csvWriter.append(",");
-            csvWriter.append("" + pop_tot);
-            csvWriter.append("\n");
-
-            csvWriter.close();
-
-        } catch (Exception e) {
-            // Ne rien faire
-        }
-
-    }
-
-    public static void main(String[] args) {
-        int n = Integer.parseInt(args[0]);
-        int Tmax = Integer.parseInt(args[1]);
-
-        Simulation simul = new Simulation();
-        simul.simulate(n, Tmax);
-
-    }
+    /*
+     * Pour tester la partie simulation
+     * 
+     * // Méthode pour échantilloner la population public void populationSample(int
+     * time) {
+     * 
+     * int pop_tot = 0; int pop_homme = 0; int pop_femme = 0;
+     * 
+     * // Calculer la population homme, femme totale for (Sim perso :
+     * this.population.heapMin) { pop_tot++; if (perso.getSex() ==
+     * pedigree.Sim.Sex.F) { pop_femme++; } else { pop_homme++; } }
+     * 
+     * try { FileWriter csvWriter = new FileWriter("simulationTest2.csv", true);
+     * 
+     * csvWriter.append("" + time); csvWriter.append(","); csvWriter.append("" +
+     * pop_homme); csvWriter.append(","); csvWriter.append("" + pop_femme);
+     * csvWriter.append(","); csvWriter.append("" + pop_tot);
+     * csvWriter.append("\n");
+     * 
+     * csvWriter.close();
+     * 
+     * } catch (Exception e) { // Ne rien faire }
+     * 
+     * }
+     * 
+     * public static void main(String[] args) { int n = Integer.parseInt(args[0]);
+     * int Tmax = Integer.parseInt(args[1]);
+     * 
+     * Simulation simul = new Simulation(); simul.simulate(n, Tmax);
+     * 
+     * }
+     */
 
 }

@@ -1,6 +1,7 @@
+//Code fait par Pierre-Olivier Tremblay: 20049076  et Maxime Ton: 20143044
+
 package pedigree;
 
-import pedigree.Sim;
 import java.lang.Comparable;
 
 public class Event implements Comparable<Event> {
